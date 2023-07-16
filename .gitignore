@@ -29,3 +29,9 @@ yarn-error.log*
 *.iml
 web/.pnpm-debug.log
 web/pnpm-lock.yaml
+
+# 过滤/storage/mysql下的文件
+storage/mysql/**
+!storage/mysql/init
+storage/redis/**
+!storage/redis/init
