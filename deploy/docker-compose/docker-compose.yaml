@@ -7,12 +7,14 @@ networks:
       driver: default
       config:
         - subnet: '177.7.0.0/16'
-        
+
 # 设置mysql，redis持久化保存
 volumes:
   mysql:
+    driver: local
   redis:
-  
+    driver: local
+
 services:
   web:
     build:
@@ -48,19 +50,20 @@ services:
         ipv4_address: 177.7.0.12
 
   mysql:
-    image: mysql:8.0.21       # 如果您是 arm64 架构：如 MacOS 的 M1，请修改镜像为 image: mysql/mysql-server:8.0.21
-    container_name: gva-mysql
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci #设置utf8字符集
-    restart: always
+    build:
+      context: ./mysql
+      args:
+        - MYSQL_VERSION=8.0.21
     ports:
-      - "13306:3306"  # host物理直接映射端口为13306
+      - "13306:3306" # host物理直接映射端口为13306
     environment:
-      #MYSQL_ROOT_PASSWORD: 'Aa@6447985' # root管理员用户密码
-      MYSQL_DATABASE: 'qmPlus' # 初始化启动时要创建的数据库的名称
-      MYSQL_USER: 'gva'
-      MYSQL_PASSWORD: 'Aa@6447985'
+      - MYSQL_DATABASE=default
+      - MYSQL_USER=wankun
+      - MYSQL_PASSWORD=wankun
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=UTC
     volumes:
-      - mysql:/var/lib/mysql
+      - ../../storage/mysql:/var/lib/mysql
     networks:
       network:
         ipv4_address: 177.7.0.13
@@ -72,7 +75,9 @@ services:
     ports:
       - '16379:6379'
     volumes:
-      - redis:/data
+      - ../../storage/redis:/data
     networks:
       network:
         ipv4_address: 177.7.0.14
+
+name: gva
