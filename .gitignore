@@ -35,3 +35,4 @@ storage/mysql/**
 !storage/mysql/init
 storage/redis/**
 !storage/redis/init
+server/server
